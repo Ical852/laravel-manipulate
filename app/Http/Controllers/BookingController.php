@@ -9,21 +9,17 @@ class BookingController extends Controller
 {
     public function getBookings()
     {
-        // Read JSON files
         $bookingsJson = Storage::get('bookings.json');
         $workshopsJson = Storage::get('workshops.json');
 
-        // Decode JSON to associative arrays
         $bookings = json_decode($bookingsJson, true);
         $workshops = json_decode($workshopsJson, true);
 
-        // Create a lookup array for workshops
         $workshopLookup = [];
         foreach ($workshops['data'] as $workshop) {
             $workshopLookup[$workshop['code']] = $workshop;
         }
 
-        // Manipulate the booking data
         $manipulatedData = [];
         foreach ($bookings['data'] as $booking) {
             $workshopCode = $booking['booking']['workshop']['code'];
@@ -48,12 +44,10 @@ class BookingController extends Controller
             ];
         }
 
-        // Sort data by ahass_distance
         usort($manipulatedData, function ($a, $b) {
             return $a['ahass_distance'] <=> $b['ahass_distance'];
         });
 
-        // Prepare the final response
         $response = [
             'status' => 1,
             'message' => 'Data Successfully Retrieved.',
